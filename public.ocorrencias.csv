@@ -1,16 +1,17 @@
 id,jogo,regiao,genero,resposta_modelo,data
-16,T,Região Metropolitana,F,85%
-17,f,Região Metropolitana,M,70%
-18,T,Agreste,M,90%
-19,f,Sertão,F,60%
-20,T,Zona da Mata,M,95%
-21,f,Mata Sul,F,50%
-22,T,Região Metropolitana,M,80%
-23,f,Agreste,F,65%
-24,T,Sertão,M,75%
-25,f,Zona da Mata,F,55%
-26,T,Mata Sul,M,88%
-27,f,Região Metropolitana,F,45%
-28,T,Agreste,M,92%
-29,f,Sertão,M,78%
-30,T,Zona da Mata,F,68%
+16,T,Região Metropolitana,F,85%,2025-10-07 10:20:04.47869,
+17,f,Região Metropolitana,M,70%,2025-10-07 10:20:04.47869,
+18,T,Agreste,M,90%,2025-10-07 10:20:04.47869,
+19,f,Sertão,F,60%,2025-10-07 10:20:04.47869,
+20,T,Zona da Mata,M,95%,2025-10-07 10:20:04.47869,
+21,f,Mata Sul,F,50%,2025-10-07 10:20:04.47869,
+22,T,Região Metropolitana,M,80%,2025-10-07 10:20:04.47869,
+23,f,Agreste,F,65%,2025-10-07 10:20:04.47869,
+24,T,Sertão,M,75%,2025-10-07 10:20:04.47869,
+25,f,Zona da Mata,F,55%,2025-10-07 10:20:04.47869,
+26,T,Mata Sul,M,88%,2025-10-07 10:20:04.47869,
+27,f,Região Metropolitana,F,45%,2025-10-07 10:20:04.47869,
+28,T,Agreste,M,92%,2025-10-07 10:20:04.47869,
+29,f,Sertão,M,78%,2025-10-07 10:20:04.47869,
+30,T,Zona da Mata,F,68%,2025-10-07 10:20:04.47869,
+

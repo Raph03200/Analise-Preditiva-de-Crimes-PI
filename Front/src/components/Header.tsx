@@ -19,6 +19,10 @@ export const Header = () => {
                         <li className="hover:text-yellow-500">
                             <Link href={'/paineis'}>Dashboards</Link>
                         </li>
+
+                        <li className="hover:text-yellow-500">
+                            <Link href={'/chatbot'}>Chatbot</Link>
+                        </li>
                     </ul>
                 </nav>
             </div>

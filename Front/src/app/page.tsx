@@ -69,7 +69,7 @@ const Page = () => {
             style={{ backgroundImage: 'url(https://carsughi.uol.com.br/wp-content/uploads/2022/12/lendario-rei-do-futebol-pele-morre-aos-82-anos.jpg)' }}
         >
             <div className="bg-white rounded-lg shadow-lg p-5 md:min-w-[350px]">
-                <h1 className="mb-3 text-center text-xl font-bold">Eu irei jogar com o Pelé?</h1>
+                <h1 className="mb-3 text-center text-xl font-bold text-gray-800">Eu irei jogar com o Pelé?</h1>
 
                 <form onSubmit={handleSubmit} className="flex flex-col gap-3 items-center">
                     <input 
@@ -86,7 +86,7 @@ const Page = () => {
                         className="bg-none outline-0 rounded-md border-2 border-black w-full p-1"
                     />
 
-                    <div className="text-left w-full">
+                    <div className="text-left w-full text-gray-800">
                         Seu gênero:
                         <div className="flex items-center gap-5 text-center w-full justify-center mt-4">
                             <BsGenderMale 
@@ -101,7 +101,7 @@ const Page = () => {
                         </div>
                     </div>
 
-                    <div className="text-left w-full">
+                    <div className="text-left w-full text-gray-800">
                         Tem jogo?
                         <div className="flex items-center gap-5 text-center w-full justify-center mt-4">
                             <label>
@@ -131,7 +131,7 @@ const Page = () => {
                     <button className="bg-blue-600 text-white mt-4 px-2 py-1 rounded-md cursor-pointer">Enviar</button>
                 </form>
 
-                <div className="text-center text-2xl mt-3" >
+                <div className="text-center text-2xl mt-3 text-gray-800 font-semibold" >
                         
                     {resultado &&
                         resultado+ '% de chance de ver ele'

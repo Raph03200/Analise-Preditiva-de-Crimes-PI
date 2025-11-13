@@ -28,10 +28,10 @@ const GetDate: React.FC<MonthYearPickerProps> = ({
     <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-md max-w-md mx-auto mt-8">
       {/* Mês */}
       <div className="flex flex-col">
-        <label className="text-sm text-gray-600 mb-1">Mês</label>
+        <label className="text-sm text-gray-700 font-semibold mb-1">Mês</label>
         <div className="relative">
           <select
-            className="appearance-none w-40 px-4 py-2 pr-10 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="appearance-none w-40 px-4 py-2 pr-10 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
             value={selectedMonth}
             onChange={(e) => onChange(Number(e.target.value), selectedYear)}
           >
@@ -47,10 +47,10 @@ const GetDate: React.FC<MonthYearPickerProps> = ({
 
       {/* Ano */}
       <div className="flex flex-col">
-        <label className="text-sm text-gray-600 mb-1">Ano</label>
+        <label className="text-sm text-gray-700 font-semibold mb-1">Ano</label>
         <div className="relative">
           <select
-            className="appearance-none w-28 px-4 py-2 pr-10 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="appearance-none w-28 px-4 py-2 pr-10 bg-gray-100 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-800"
             value={selectedYear}
             onChange={(e) => onChange(selectedMonth, Number(e.target.value))}
           >

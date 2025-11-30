@@ -1,146 +1,73 @@
 'use client'
 
-import MunicipiosSelect from "@/components/municipioSelect";
-import { useState } from "react";
-import { BsGenderMale } from "react-icons/bs";
-import { BsGenderFemale } from "react-icons/bs";
+import { Header } from "@/components/Header"
+import PrevisaoForm from "@/components/PrevisaoForm"
+import ResultadoPrevisao from "@/components/ResultadoPrevisao"
+import { useState } from "react"
 
 const Page = () => {
+    const [resultado, setResultado] = useState<{
+        valor: number
+        municipio: string
+        mes: string
+        ano: string
+    } | null>(null)
 
-    const handleMunicipioSelect = (municipio: { id: number; nome: string }) => {
-        console.log('Selecionado:', municipio);
-    };
-
-    const [gender, setGender] = useState<"male" | "female" | null>(null)
-    const [game, setGame] = useState<boolean | null>(null)
-    const [resultado, setResultado] = useState<number | null>(null)
-    const [loading, setLoading] = useState(false)
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setGame(e.target.value == 'sim' ? true : false);
-    };
-
-    const handleSubmit = async (e:  React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-
-        // setLoading(true)
-
-        // setTimeout(() => {
-        //     setResultado(Math.floor(Math.random() * 100))
-        //     setLoading(false)
-        // }, 1500)
-        
-        const response = await fetch('http://localhost:8000/prever', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                teve_jogo: game ? 1 : 0,
-                qtd_jogos: 1,
-                final_semana: 1,
-                mes: 10,
-                ano: 2021,
-                TOTAL_DE_VITIMAS: 0.0
-            })
-        });
-
-        const data = await response.json()
-        console.log(data)
-        setResultado(data.probabilidade_vitimas.toFixed(2))
-
-        // await fetch('/api/ocorrencias', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         jogo: game ? 'T' : 'f',
-        //         genero: gender === 'male' ? 'M' : 'F',
-        //         resposta_modelo: `${resultado}%`,
-        //         municipio: MunicipiosSelect,
-        //     })
-        // });
+    const handlePrevisao = (valor: number, dados: any) => {
+        setResultado({
+            valor,
+            municipio: dados.municipio,
+            mes: dados.mes,
+            ano: dados.ano
+        })
     }
 
-    return(
-        <div 
-            className="bg-blue-400 h-screen w-screen flex justify-center items-center bg-no-repeat bg-cover bg-center"
-            style={{ backgroundImage: 'url(https://carsughi.uol.com.br/wp-content/uploads/2022/12/lendario-rei-do-futebol-pele-morre-aos-82-anos.jpg)' }}
-        >
-            <div className="bg-white rounded-lg shadow-lg p-5 md:min-w-[350px]">
-                <h1 className="mb-3 text-center text-xl font-bold text-gray-800">Eu irei jogar com o Pelé?</h1>
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+            <Header />
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3 items-center">
-                    <input 
-                        type="text" 
-                        placeholder="Indique o mês"
-                        className="bg-none outline-0 rounded-md border-2 border-black w-full p-1"
-                    />
-
-                    <MunicipiosSelect onSelect={handleMunicipioSelect}/>
-
-                    <input 
-                        type="text" 
-                        placeholder="Indique o Ano"
-                        className="bg-none outline-0 rounded-md border-2 border-black w-full p-1"
-                    />
-
-                    <div className="text-left w-full text-gray-800">
-                        Seu gênero:
-                        <div className="flex items-center gap-5 text-center w-full justify-center mt-4">
-                            <BsGenderMale 
-                                className={`text-2xl cursor-pointer font-bold ${gender === 'male' ? 'text-blue-400' : 'text-blue-200'}`}
-                                onClick={() => setGender('male')}
-                                
-                            />
-                            <BsGenderFemale 
-                                className={`text-2xl cursor-pointer font-bold ${gender === 'female' ? 'text-pink-400' : 'text-pink-200'}`}
-                                onClick={() => setGender('female')}
-                            />
-                        </div>
-                    </div>
-
-                    <div className="text-left w-full text-gray-800">
-                        Tem jogo?
-                        <div className="flex items-center gap-5 text-center w-full justify-center mt-4">
-                            <label>
-                                <input
-                                    type="radio"
-                                    name="simnao"
-                                    value="sim"
-                                    checked={game === true}
-                                    onChange={handleChange}
-                                />
-                                    Sim
-                            </label>
-
-                            <label >
-                                <input
-                                    type="radio"
-                                    name="simnao"
-                                    value="nao"
-                                    checked={game === false}
-                                    onChange={handleChange}
-                                />
-                                    Não
-                            </label>
-                        </div>
-                    </div>
-
-                    <button className="bg-blue-600 text-white mt-4 px-2 py-1 rounded-md cursor-pointer">Enviar</button>
-                </form>
-
-                <div className="text-center text-2xl mt-3 text-gray-800 font-semibold" >
-                        
-                    {resultado &&
-                        resultado+ '% de chance de ver ele'
-                    }
-                    {loading &&
-                        <p>Carregando...</p>
-                    }
+            <div className="container mx-auto px-4 py-12 max-w-5xl">
+                <div className="text-center mb-10">
+                    <h1 className="text-4xl font-bold text-gray-900 mb-3">
+                        Sistema de Previsão de Crimes
+                    </h1>
+                    <p className="text-lg text-gray-600">
+                        Análise preditiva baseada em Machine Learning
+                    </p>
                 </div>
-                
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-2 bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
+                        <PrevisaoForm onPrevisao={handlePrevisao} />
+                    </div>
+
+                    <div className="lg:col-span-1">
+                        {resultado ? (
+                            <ResultadoPrevisao 
+                                resultado={resultado.valor}
+                                municipio={resultado.municipio}
+                                mes={resultado.mes}
+                                ano={resultado.ano}
+                            />
+                        ) : (
+                            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-8 border border-blue-200 h-full flex flex-col justify-center">
+                                <div className="text-center space-y-4">
+                                    <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
+                                        <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-800">
+                                        Aguardando dados
+                                    </h3>
+                                    <p className="text-gray-600 text-sm">
+                                        Preencha o formulário para gerar a análise preditiva
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
         </div>
     )

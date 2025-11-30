@@ -1,6 +1,4 @@
-// normalize.ts
-//@ts-expect-error só o type
-export function normalizeName(s) {
+export function normalizeName(s: string): string {
   if (!s) return ''
   return String(s)
     .normalize('NFD')

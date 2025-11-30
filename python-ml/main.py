@@ -3,52 +3,64 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import joblib
 import pandas as pd
-import numpy as np
 
 app = FastAPI()
 
-# Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Frontend Next.js
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-modelo = joblib.load('modelo_crimes.pkl')
+modelo = joblib.load('../Modelo/modelo_random_forest.pkl')
+encoder = joblib.load('../Modelo/encoder_municipio.pkl')
 
-COLUNAS_MODELO = ['teve_jogo', 'final_semana', 'qtd_jogos', 'mes', 'ano', 'TOTAL_DE_VITIMAS']  # ajuste aqui
-
-class DadosEntrada(BaseModel):
-    teve_jogo: int
-    final_semana: int
-    qtd_jogos: int
-    mes: int
+class PrevisaoRequest(BaseModel):
+    municipio: str
     ano: int
-    TOTAL_DE_VITIMAS: float
+    mes: int
+    tem_jogo: int
+
+@app.get("/municipios")
+def listar_municipios():
+    return {
+        "municipios": list(encoder.classes_),
+        "total": len(encoder.classes_)
+    }
+
 @app.post("/prever")
-def prever_crimes(dados: DadosEntrada):
+def prever_vitimas(dados: PrevisaoRequest):
     try:
-        dados_dict = dados.dict()
-        print("Dados recebidos:", dados_dict)
-
-        entrada_df = pd.DataFrame([dados_dict])
-        entrada_df = entrada_df[COLUNAS_MODELO]
-
-        pred = modelo.predict(entrada_df)[0]
-        print("Predição:", pred)
-
-        max_esperado = 50
-        valor_normalizado = pred / max_esperado
-        probabilidade = 1 / (1 + np.exp(-valor_normalizado * 10))
-
-        print(f"Probabilidade calculada: {probabilidade * 100:.2f}%")
-
+        municipio_normalizado = dados.municipio.upper()
+        
+        if municipio_normalizado not in encoder.classes_:
+            return {
+                "error": f"Município '{dados.municipio}' não encontrado no dataset"
+            }
+        
+        municipio_codificado = encoder.transform([municipio_normalizado])[0]
+        
+        entrada = pd.DataFrame({
+            "MUNICIPIO_ENCODED": [municipio_codificado],
+            "ANO": [dados.ano],
+            "MES": [dados.mes],
+            "TEM_JOGO": [dados.tem_jogo]
+        })
+        
+        previsao = modelo.predict(entrada)[0]
+        
+        print(f"Previsão: {municipio_normalizado} - {dados.mes}/{dados.ano}: {previsao:.1f} vítimas")
+        
         return {
-            "predicao": pred,
-            "probabilidade_vitimas": probabilidade * 100
+            "municipio": municipio_normalizado,
+            "ano": dados.ano,
+            "mes": dados.mes,
+            "tem_jogo": bool(dados.tem_jogo),
+            "vitimas_previstas": round(previsao, 1)
         }
-
-    except Exception as e:
-        return {"error": str(e)}
+        
+    except Exception as erro:
+        print(f"Erro: {str(erro)}")
+        return {"error": str(erro)}

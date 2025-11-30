@@ -1,29 +1,6 @@
 import { NextResponse } from 'next/server';
-import path from 'path';
-import fs from 'fs';
-import csv from 'csv-parser';
 import pool from '@/services/db';
 
-// Tipo auxiliar
-type MapaMunicipios = Record<string, string>;
-
-// Função para carregar o CSV de município -> região
-async function carregarMapaMunicipios(): Promise<MapaMunicipios> {
-  const mapa: MapaMunicipios = {};
-  const filePath = path.join(process.cwd(), 'public', 'municipios_regioes.csv');
-
-  return new Promise((resolve, reject) => {
-    fs.createReadStream(filePath)
-      .pipe(csv())
-      .on('data', (row) => {
-        mapa[row.municipio.trim()] = row.regiao.trim();
-      })
-      .on('end', () => resolve(mapa))
-      .on('error', reject);
-  });
-}
-
-// POST: Insere uma ocorrência
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -33,21 +10,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Campos obrigatórios ausentes' }, { status: 400 });
     }
 
-    // Carrega o mapa de municípios -> regiões
-    const mapa = await carregarMapaMunicipios();
-    const regiao = mapa[municipio.trim()];
-
-    if (!regiao) {
-      return NextResponse.json({ error: 'Município não encontrado no CSV de regiões' }, { status: 400 });
-    }
-
     const dataAtual = new Date().toISOString();
-
-    // Insere no banco
+    
+    const jogoTruncado = jogo.toString().substring(0, 1);
+    const generoTruncado = genero.toString().substring(0, 1);
+    
     await pool.query(`
-      INSERT INTO ocorrencias (jogo, genero, resposta_modelo, municipio, regiao, data)
-      VALUES ($1, $2, $3, $4, $5, $6)
-    `, [jogo, genero, resposta_modelo, municipio, regiao, dataAtual]);
+      INSERT INTO ocorrencias (jogo, genero, resposta_modelo, data)
+      VALUES ($1, $2, $3, $4)
+    `, [jogoTruncado, generoTruncado, resposta_modelo, dataAtual]);
 
     return NextResponse.json({ message: 'Ocorrência registrada com sucesso!' });
   } catch (err) {

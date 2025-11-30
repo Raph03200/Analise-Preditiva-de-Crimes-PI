@@ -5,12 +5,8 @@ import { MapContainer, TileLayer, GeoJSON, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import { normalizeName } from '../utils/normalize'
-import { aggregateDeaths, parseRegionCSV } from '../utils/csv'
 import { useMemo } from 'react'
 
-
-
-// Cores por região
 const REGION_COLORS: Record<string, string> = {
   '15+': '#990000',
   '5 a 15': '#ff6666',
@@ -25,16 +21,14 @@ type Props = {
 
 const MapPernambuco = ({ year, month }: Props) => {
   const [geoJson, setGeoJson] = useState(null)
-  const [, setRegionMap] = useState<Record<string, string>>({})
-  const [deathsCounts, setDeathsCounts] = useState<Record<string, number>>({})
+  const [contagemMortes, setContagemMortes] = useState<Record<string, number>>({})
+  const [carregando, setCarregando] = useState(true)
 
-  // Carrega GeoJSON
   useEffect(() => {
     fetch('/geo/geojs-26-mun.json')
       .then(res => res.json())
       .then((data) => {
-        //@ts-expect-error só o type
-        data.features.forEach((f) => {
+        data.features.forEach((f: any) => {
           const props = f.properties || {}
           const nome = props.NM_MUN || props.NM_MUNICIP || props.nome || props.NOME || props.name || props.municipio || props.NAME
           f.properties._mun_norm = normalizeName(nome)
@@ -43,74 +37,55 @@ const MapPernambuco = ({ year, month }: Props) => {
       })
   }, [])
 
-  // Carrega CSV de regiões
   useEffect(() => {
-    fetch('/geo/municipio_region.csv')
-      .then(res => res.text())
-      .then(txt => {
-        const map = parseRegionCSV(txt)
-        setRegionMap(map)
-        if (geoJson) {
-          //@ts-expect-error só o type
-          geoJson.features.forEach((f) => {
-            const key = f.properties._mun_norm
-            if (map[key]) f.properties._regiao_custom = map[key]
-          })
-          //@ts-expect-error só o type
-          setGeoJson({ ...geoJson })
-        }
+    setCarregando(true)
+    fetch(`/api/mapa-dados?ano=${year}&mes=${month}`)
+      .then(res => res.json())
+      .then(resposta => {
+        setContagemMortes(resposta.dados || {})
+        setCarregando(false)
       })
-      .catch(() => setRegionMap({}))
-  }, [geoJson])
-
-  // Carrega CSV de mortes e calcula mortes do mês
-  useEffect(() => {
-    fetch('/geo/mortes.csv')
-      .then(res => res.text())
-      .then(txt => {
-        const counts = aggregateDeaths(txt, year, month)
-        setDeathsCounts(counts)
+      .catch(erro => {
+        console.error('Erro ao buscar dados do mapa:', erro)
+        setContagemMortes({})
+        setCarregando(false)
       })
   }, [year, month])
 
-
-  //@ts-expect-error só o type
-  function styleFeature(feature) {
+  function estilizarFeature(feature: any) {
     const props = feature.properties || {}
-    const mortes = deathsCounts[props._mun_norm] || 0
+    const mortes = contagemMortes[props._mun_norm] || 0
 
-    let fillColor = '#cccccc' // cinza para 0 mortes
-    if (mortes >= 1 && mortes <= 5) fillColor = '#3399ff' // azul
-    else if (mortes > 5 && mortes < 15) fillColor = '#ff6666' // vermelho claro
-    else if (mortes >= 15) fillColor = '#990000' // vermelho escuro
+    let corPreenchimento = '#cccccc'
+    if (mortes >= 1 && mortes <= 5) corPreenchimento = '#3399ff'
+    else if (mortes > 5 && mortes < 15) corPreenchimento = '#ff6666'
+    else if (mortes >= 15) corPreenchimento = '#990000'
 
     return {
-      color: '#222222', // borda
+      color: '#222222',
       weight: 0.6,
-      fillColor,
+      fillColor: corPreenchimento,
       fillOpacity: 0.7,
     }
   }
 
-  //@ts-expect-error só o type
-  function onEachFeature(feature, layer) {
+  function aoClicarFeature(feature: any, layer: any) {
     const props = feature.properties || {}
     const nome = props._mun_norm ? props._mun_norm.charAt(0).toUpperCase() + props._mun_norm.slice(1) : props.name || '---'
     layer.on('click', () => {
-      const mortes = deathsCounts[props._mun_norm] || 0
+      const mortes = contagemMortes[props._mun_norm] || 0
       layer.bindPopup(`<strong>${nome}</strong><br/>Mortes no mês: ${mortes}`).openPopup()
     })
   }
 
-  
-
-  const geoJsonKey = useMemo(() => {
-    // Gera uma chave simples baseada no ano, mês e quantidade de mortes (poderia ser mais robusto)
-    const hash = Object.keys(deathsCounts).length
+  const chaveGeoJson = useMemo(() => {
+    const hash = Object.keys(contagemMortes).length
     return `${year}-${month}-${hash}`
-  }, [year, month, deathsCounts])
+  }, [year, month, contagemMortes])
 
-  if (!geoJson) return <div>Carregando malha de Pernambuco...</div>
+  if (!geoJson) return <div className="flex items-center justify-center h-full text-gray-600">Carregando malha de Pernambuco...</div>
+
+  if (carregando) return <div className="flex items-center justify-center h-full text-gray-600">Carregando dados...</div>
 
   return (
     <div className="h-full w-full">
@@ -119,31 +94,31 @@ const MapPernambuco = ({ year, month }: Props) => {
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; OpenStreetMap contributors & CARTO'
         />
-        <GeoJSON key={geoJsonKey} data={geoJson} style={styleFeature} onEachFeature={onEachFeature} />
-        <Legend />
+        <GeoJSON key={chaveGeoJson} data={geoJson} style={estilizarFeature} onEachFeature={aoClicarFeature} />
+        <Legenda />
       </MapContainer>
     </div>
   )
 }
 
-// Legenda
-const Legend: React.FC = () => {
-  const map = useMap()
+const Legenda: React.FC = () => {
+  const mapa = useMap()
   useEffect(() => {
-    //@ts-expect-error só o type
-    const control = L.control({ position: 'bottomright' })
-    control.onAdd = function () {
+    const controle = new L.Control({ position: 'bottomright' })
+    controle.onAdd = function () {
       const div = L.DomUtil.create('div', 'info legend')
-      let inner = '<strong>Gravidade</strong><br/>'
-      for (const [reg, color] of Object.entries(REGION_COLORS)) {
-        inner += `<i style="background:${color}; width:18px; height:12px; display:inline-block; margin-right:8px;"></i>${reg}<br/>`
+      let conteudo = '<strong>Gravidade</strong><br/>'
+      for (const [categoria, cor] of Object.entries(REGION_COLORS)) {
+        conteudo += `<i style="background:${cor}; width:18px; height:12px; display:inline-block; margin-right:8px;"></i>${categoria}<br/>`
       }
-      div.innerHTML = inner
+      div.innerHTML = conteudo
       return div
     }
-    control.addTo(map)
-    return () => control.remove()
-  }, [map])
+    controle.addTo(mapa)
+    return () => {
+      controle.remove()
+    }
+  }, [mapa])
   return null
 }
 

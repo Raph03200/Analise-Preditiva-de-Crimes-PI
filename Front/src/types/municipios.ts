@@ -1,8 +1,8 @@
-interface Municipio {
-    id: number;
-    nome: string;
+export interface Municipio {
+  id: number
+  nome: string
 }
 
-interface MunicipiosSelectProps {
-    onSelect: (municipio: Municipio) => void;
+export interface MunicipiosSelectProps {
+  onSelect: (municipio: Municipio) => void
 }

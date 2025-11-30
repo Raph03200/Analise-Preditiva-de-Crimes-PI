@@ -1,4 +1,3 @@
-// components/MonthYearPicker.tsx
 import React from "react";
 
 type MonthYearPickerProps = {

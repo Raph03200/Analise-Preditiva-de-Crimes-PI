@@ -2,6 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 
+type Municipio = {
+  id: number;
+  nome: string;
+};
+
+type MunicipiosSelectProps = {
+  onSelect: (municipio: Municipio) => void;
+};
+
 const MunicipiosSelect: React.FC<MunicipiosSelectProps> = ({ onSelect }) => {
   const [municipios, setMunicipios] = useState<Municipio[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -30,10 +39,14 @@ const MunicipiosSelect: React.FC<MunicipiosSelectProps> = ({ onSelect }) => {
     }
   };
 
-  if (loading) return <p>Carregando municípios...</p>;
+  if (loading) return <p className="text-gray-600 text-center py-3">⏳ Carregando municípios...</p>;
 
   return (
-    <select onChange={handleChange} defaultValue="" className='border-2 border-black rounded-md p-2 w-full'>
+    <select 
+      onChange={handleChange} 
+      defaultValue="" 
+      className='w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900 bg-gray-50 font-medium transition appearance-none cursor-pointer'
+    >
       <option value="" disabled>Selecione um município</option>
       {municipios.map((municipio) => (
         <option key={municipio.id} value={municipio.id}>

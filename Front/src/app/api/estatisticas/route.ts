@@ -3,15 +3,12 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   try {
-    // Busca todas as ocorrências
     const todasOcorrencias = await pool.query(`
       SELECT * FROM ocorrencias ORDER BY data DESC
     `);
 
-    // Total de ocorrências
     const total = todasOcorrencias.rows.length;
 
-    // Agrupa por região
     const porRegiao = await pool.query(`
       SELECT regiao, COUNT(*) as total
       FROM ocorrencias
@@ -19,14 +16,12 @@ export async function GET() {
       ORDER BY total DESC
     `);
 
-    // Agrupa por gênero
     const porGenero = await pool.query(`
       SELECT genero, COUNT(*) as total
       FROM ocorrencias
       GROUP BY genero
     `);
 
-    // Ocorrências com jogo vs sem jogo
     const porJogo = await pool.query(`
       SELECT 
         CASE 
@@ -38,7 +33,6 @@ export async function GET() {
       GROUP BY jogo
     `);
 
-    // Média de probabilidade por região
     const mediaPorRegiao = await pool.query(`
       SELECT 
         regiao,

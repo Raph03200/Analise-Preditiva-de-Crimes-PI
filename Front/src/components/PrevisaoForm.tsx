@@ -4,7 +4,7 @@ import { useState } from "react"
 import MunicipiosSelect from "./municipioSelect"
 
 type PrevisaoFormProps = {
-    onPrevisao: (resultado: number, dados: any) => void
+    onPrevisao: (resultado: number, dados: { municipio: string; mes: string; ano: string; tem_jogo: boolean }) => void
 }
 
 export default function PrevisaoForm({ onPrevisao }: PrevisaoFormProps) {

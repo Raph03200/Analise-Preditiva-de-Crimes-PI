@@ -19,18 +19,34 @@ type Props = {
   month: number
 }
 
+type GeoJsonProperties = Record<string, string | undefined>
+
+type GeoJsonFeature = {
+  properties: GeoJsonProperties
+}
+
+type GeoJsonData = {
+  features: GeoJsonFeature[]
+  type: 'FeatureCollection'
+}
+
+type LeafletLayer = {
+  on: (event: string, callback: () => void) => void
+  bindPopup: (content: string) => { openPopup: () => void }
+}
+
 const MapPernambuco = ({ year, month }: Props) => {
-  const [geoJson, setGeoJson] = useState(null)
+  const [geoJson, setGeoJson] = useState<GeoJsonData | null>(null)
   const [contagemMortes, setContagemMortes] = useState<Record<string, number>>({})
   const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
     fetch('/geo/geojs-26-mun.json')
       .then(res => res.json())
-      .then((data) => {
-        data.features.forEach((f: any) => {
+      .then((data: GeoJsonData) => {
+        data.features.forEach((f: GeoJsonFeature) => {
           const props = f.properties || {}
-          const nome = props.NM_MUN || props.NM_MUNICIP || props.nome || props.NOME || props.name || props.municipio || props.NAME
+          const nome = props.NM_MUN || props.NM_MUNICIP || props.nome || props.NOME || props.name || props.municipio || props.NAME || ''
           f.properties._mun_norm = normalizeName(nome)
         })
         setGeoJson(data)
@@ -52,9 +68,9 @@ const MapPernambuco = ({ year, month }: Props) => {
       })
   }, [year, month])
 
-  function estilizarFeature(feature: any) {
-    const props = feature.properties || {}
-    const mortes = contagemMortes[props._mun_norm] || 0
+  function estilizarFeature(feature?: GeoJsonFeature) {
+    const props = feature?.properties || {}
+    const mortes = contagemMortes[props._mun_norm || ''] || 0
 
     let corPreenchimento = '#cccccc'
     if (mortes >= 1 && mortes <= 5) corPreenchimento = '#3399ff'
@@ -69,11 +85,11 @@ const MapPernambuco = ({ year, month }: Props) => {
     }
   }
 
-  function aoClicarFeature(feature: any, layer: any) {
-    const props = feature.properties || {}
+  function aoClicarFeature(feature: GeoJsonFeature, layer: LeafletLayer) {
+    const props = feature?.properties || {}
     const nome = props._mun_norm ? props._mun_norm.charAt(0).toUpperCase() + props._mun_norm.slice(1) : props.name || '---'
     layer.on('click', () => {
-      const mortes = contagemMortes[props._mun_norm] || 0
+      const mortes = contagemMortes[props._mun_norm || ''] || 0
       layer.bindPopup(`<strong>${nome}</strong><br/>Mortes no mês: ${mortes}`).openPopup()
     })
   }
@@ -94,7 +110,7 @@ const MapPernambuco = ({ year, month }: Props) => {
           url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
           attribution='&copy; OpenStreetMap contributors & CARTO'
         />
-        <GeoJSON key={chaveGeoJson} data={geoJson} style={estilizarFeature} onEachFeature={aoClicarFeature} />
+        <GeoJSON key={chaveGeoJson} data={geoJson as never} style={estilizarFeature} onEachFeature={aoClicarFeature} />
         <Legenda />
       </MapContainer>
     </div>

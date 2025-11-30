@@ -28,7 +28,7 @@ function processarMarkdown(texto: string): LinhaFormatada[] {
     } else if (linha.match(/^[-*]\s+/)) {
       linhas.push({ texto: '• ' + linha.replace(/^[-*]\s+/, ''), tipo: 'lista' })
     } else {
-      let textoProcessado = linha
+      const textoProcessado = linha
         .replace(/\*\*(.+?)\*\*/g, '$1')
         .replace(/\*(.+?)\*/g, '$1')
       

@@ -13,7 +13,7 @@ const Page = () => {
         ano: string
     } | null>(null)
 
-    const handlePrevisao = (valor: number, dados: any) => {
+    const handlePrevisao = (valor: number, dados: { municipio: string; mes: string; ano: string }) => {
         setResultado({
             valor,
             municipio: dados.municipio,

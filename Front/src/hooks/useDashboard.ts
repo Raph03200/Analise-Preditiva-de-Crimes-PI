@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 type DadosDashboard = {
   total: number;
@@ -23,7 +23,7 @@ export function useDashboard() {
   const [regiaoFiltro, setRegiaoFiltro] = useState('TODAS');
   const [generoFiltro, setGeneroFiltro] = useState('TODOS');
 
-  const buscarDados = () => {
+  const buscarDados = useCallback(() => {
     setCarregando(true);
     setErro(null);
 
@@ -53,11 +53,11 @@ export function useDashboard() {
         setErro(err.message || 'Erro ao carregar dados. Tente novamente.');
         setCarregando(false);
       });
-  };
+  }, [anoInicio, anoFim, regiaoFiltro, generoFiltro]);
 
   useEffect(() => {
     buscarDados();
-  }, []);
+  }, [buscarDados]);
 
   return {
     dados,

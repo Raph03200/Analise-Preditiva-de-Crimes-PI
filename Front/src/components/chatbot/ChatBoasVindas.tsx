@@ -20,12 +20,6 @@ export function ChatBoasVindas() {
       descricao: "Compare municípios, regiões e períodos",
       cor: "from-emerald-500 to-emerald-600"
     },
-    {
-      icone: "⚽",
-      titulo: "Eventos Esportivos",
-      descricao: "Analise impacto de jogos do Brasileirão",
-      cor: "from-orange-500 to-orange-600"
-    }
   ]
 
   const exemplosPerguntas = [
@@ -128,7 +122,7 @@ export function ChatBoasVindas() {
               <h4 className="font-semibold text-blue-900 mb-2">💡 Dicas para melhores resultados</h4>
               <ul className="text-sm text-blue-800 space-y-1">
                 <li>• Seja específico sobre municípios e períodos</li>
-                <li>• Use nomes completos (ex: "Jaboatão dos Guararapes")</li>
+                <li>• Use nomes completos (ex: &quot;Jaboatão dos Guararapes&quot;)</li>
                 <li>• Para previsões, especifique mês e ano desejado</li>
               </ul>
             </div>

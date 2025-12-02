@@ -57,7 +57,7 @@ export function useDashboard() {
 
   useEffect(() => {
     buscarDados();
-  }, [buscarDados]);
+  }, []);
 
   return {
     dados,

@@ -100,15 +100,15 @@ const Page = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
       <Header />
 
-      <div className="container mx-auto px-4 py-12 max-w-7xl">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">
+      <div className="flex-1 flex flex-col container mx-auto px-4 py-3 max-w-7xl overflow-hidden">
+        <div className="text-center mb-3">
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">
             Dashboard de Dados Históricos
           </h1>
-          <p className="text-lg text-gray-600">
+          <p className="text-sm text-gray-600">
             Análise de crimes violentos em Pernambuco (2004-2025)
           </p>
         </div>
@@ -135,7 +135,9 @@ const Page = () => {
           totalRegioes={dados.porRegiao.length}
         />
 
-        <GraficosDashboard dados={dados} />
+        <div className="flex-1 overflow-y-auto">
+          <GraficosDashboard dados={dados} />
+        </div>
       </div>
     </div>
   );

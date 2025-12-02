@@ -80,6 +80,9 @@ export async function GET(request: Request) {
         AND ($3 = 'TODAS' OR regiao = $3)
         AND ($4 = 'TODOS' OR genero = $4)
         AND regiao IS NOT NULL
+        AND regiao != ''
+        AND regiao != '0'
+        AND TRIM(regiao) != ''
       GROUP BY regiao
       ORDER BY total DESC
     `, parametros)
@@ -92,6 +95,10 @@ export async function GET(request: Request) {
         AND ($4 = 'TODOS' OR genero = $4)
         AND genero IS NOT NULL 
         AND genero != 'N/A'
+        AND genero != ''
+        AND genero != 'DESCONHECIDO'
+        AND genero != 'Desconhecido'
+        AND TRIM(genero) != ''
       GROUP BY genero
       ORDER BY total DESC
     `, parametros)
@@ -118,6 +125,9 @@ export async function GET(request: Request) {
       SELECT DISTINCT regiao 
       FROM crimes_historicos 
       WHERE regiao IS NOT NULL 
+        AND regiao != ''
+        AND regiao != '0'
+        AND TRIM(regiao) != ''
       ORDER BY regiao
     `)
 
@@ -126,6 +136,10 @@ export async function GET(request: Request) {
       FROM crimes_historicos 
       WHERE genero IS NOT NULL 
         AND genero != 'N/A'
+        AND genero != ''
+        AND genero != 'DESCONHECIDO'
+        AND genero != 'Desconhecido'
+        AND TRIM(genero) != ''
       ORDER BY genero
     `)
 

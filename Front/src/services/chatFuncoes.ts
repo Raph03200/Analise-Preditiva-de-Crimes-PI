@@ -49,13 +49,13 @@ export async function consultarEstatisticas(params: {
     let paramIndex = 3
 
     if (municipio) {
-      condicoes.push(`UPPER(municipio) = ${paramIndex}`)
+      condicoes.push(`UPPER(municipio) = $${paramIndex}`)
       valores.push(municipio.toUpperCase())
       paramIndex++
     }
 
     if (regiao) {
-      condicoes.push(`UPPER(regiao) = ${paramIndex}`)
+      condicoes.push(`UPPER(regiao) = $${paramIndex}`)
       valores.push(regiao.toUpperCase())
       paramIndex++
     }

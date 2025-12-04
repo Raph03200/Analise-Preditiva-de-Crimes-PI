@@ -12,7 +12,6 @@ const Page = () => {
   const router = useRouter();
   const { user, loading } = useUser();
 
-  // ❗ HOOKS DEVEM SEMPRE VIR ANTES DE QUALQUER RETURN
   const [resultado, setResultado] = useState<{
     valor: number;
     municipio: string;
@@ -26,9 +25,6 @@ const Page = () => {
     }
   }, [loading, user, router]);
 
-  // -------------------------------------------------------
-  // ⛔ NÃO COLOCAR HOOKS ABAIXO DISSO
-  // -------------------------------------------------------
 
   if (loading) return <p>Carregando...</p>;
   if (!user) return null;

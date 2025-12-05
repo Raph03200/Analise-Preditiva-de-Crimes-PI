@@ -1,7 +1,5 @@
 name: Build Front
 
-
-
 on:
   push:
     branches: [ main ]
@@ -9,13 +7,12 @@ on:
     branches: [ main ]
 
 jobs:
-
   build:
     runs-on: ubuntu-latest
 
     defaults:
       run:
-        working-directory: Analise-Preditiva-de-Crimes-PI/Front   # Pasta onde está o package.json
+        working-directory: Front
 
     steps:
       - name: Checkout do repositório
@@ -26,6 +23,14 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+          cache-dependency-path: Front/package-lock.json
+
+      - name: Mostrar estrutura de pastas
+        run: |
+          echo "Diretório atual:"
+          pwd
+          echo "Listando tudo:"
+          ls -R .
 
       - name: Instalar dependências
         run: npm install

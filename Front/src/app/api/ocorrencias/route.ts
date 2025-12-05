@@ -16,9 +16,10 @@ export async function POST(req: Request) {
     const generoTruncado = genero.toString().substring(0, 1);
     
     await pool.query(`
-      INSERT INTO ocorrencias (jogo, genero, resposta_modelo, data)
-      VALUES ($1, $2, $3, $4)
-    `, [jogoTruncado, generoTruncado, resposta_modelo, dataAtual]);
+      INSERT INTO ocorrencias (jogo, genero, resposta_modelo, data, municipio)
+      VALUES ($1, $2, $3, $4, $5)
+      ON CONFLICT (id) DO NOTHING
+    `, [jogoTruncado, generoTruncado, resposta_modelo, dataAtual, municipio]);
 
     return NextResponse.json({ message: 'Ocorrência registrada com sucesso!' });
   } catch (err) {

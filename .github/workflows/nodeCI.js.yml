@@ -1,5 +1,7 @@
 name: Build Front
 
+
+
 on:
   push:
     branches: [ main ]
@@ -7,6 +9,7 @@ on:
     branches: [ main ]
 
 jobs:
+
   build:
     runs-on: ubuntu-latest
 
@@ -23,6 +26,10 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
+      - name: Mostrar estrutura de pastas
+        run: |
+          pwd
+          ls -R .
 
       - name: Instalar dependências
         run: npm install

@@ -1,4 +1,3 @@
-// Teste CI
 name: CI
 
 on: pull_request
@@ -9,6 +8,7 @@ jobs:
   defaults:
     run: 
       working-directory: Front
+      
   steps:
    - uses: actions/checkout@v3
    - name: Using Node.js

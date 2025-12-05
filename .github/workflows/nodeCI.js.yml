@@ -34,6 +34,9 @@ jobs:
 
       - name: Instalar dependências
         run: npm install
-
+        
+      - name: Criar o env
+        run: cp .env.example .env.local
+        
       - name: Rodar build
         run: npm run build

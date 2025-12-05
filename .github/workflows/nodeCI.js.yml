@@ -1,16 +1,28 @@
-name: CI
+name: Build Front
 
-on: pull_request
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
- continuous-inegration:
-  runs-on: ubuntu-latest
-  defaults:
-    run: 
-      working-directory: Front
-      
-  steps:
-      - uses: actions/checkout@v4
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: Front   # Pasta onde está o package.json
+
+    steps:
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
 
       - name: Instalar dependências
         run: npm install

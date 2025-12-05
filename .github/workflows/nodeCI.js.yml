@@ -15,7 +15,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: Front   # Pasta onde está o package.json
+        working-directory: Analise-Preditiva-de-Crimes-PI/Front   # Pasta onde está o package.json
 
     steps:
       - name: Checkout do repositório
@@ -26,10 +26,6 @@ jobs:
         with:
           node-version: '18'
           cache: 'npm'
-      - name: Mostrar estrutura de pastas
-        run: |
-          pwd
-          ls -R .
 
       - name: Instalar dependências
         run: npm install
